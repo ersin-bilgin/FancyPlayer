@@ -1,0 +1,110 @@
+services:
+  postgresql:
+    image: postgres:16-alpine
+    container_name: lightnap-postgresql
+    environment:
+      POSTGRES_DB: LightNap
+      POSTGRES_USER: lightnap_user
+      POSTGRES_PASSWORD: LightNap123!
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - lightnap-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lightnap_user -d LightNap"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: lightnap-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - lightnap-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: lightnap-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - lightnap-network
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+  lightnap-webapi:
+    build:
+      context: .
+      dockerfile: LightNap.WebApi/Dockerfile
+    image: lightnap-webapi:latest
+    container_name: lightnap-webapi
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - DatabaseProvider=PostgreSQL
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=LightNap;Username=lightnap_user;Password=LightNap123!
+      - Jwt__Key=Any32+CharacterKeyLikeAGuidForDevelopment
+      - Jwt__Issuer=http://localhost:8080
+      - Jwt__Audience=http://localhost:8080
+      - Email__Provider=LogToConsole
+      - Email__FromEmail=hello@lightnap.com
+      - Email__FromDisplayName=LightNap System
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lightnap-network
+
+  lightnap-maintenance:
+    build:
+      context: .
+      dockerfile: LightNap.MaintenanceService/Dockerfile
+    image: lightnap-maintenance:latest
+    container_name: lightnap-maintenance
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DatabaseProvider=PostgreSQL
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=LightNap;Username=lightnap_user;Password=LightNap123!
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    networks:
+      - lightnap-network
+
+volumes:
+  postgresql_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  lightnap-network:
+    driver: bridge
+

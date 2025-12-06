@@ -1,0 +1,415 @@
+import { Injectable } from "@angular/core";
+
+export interface Order {
+  id?: number;
+  customer?: string;
+  date?: string;
+  amount?: number;
+  status?: string;
+}
+
+export interface Product {
+  id?: string;
+  code?: string;
+  name?: string;
+  description?: string;
+  price?: number;
+  quantity?: number;
+  inventoryStatus?: string;
+  category?: string;
+  image?: string;
+  rating?: number;
+  orders?: Order[];
+}
+
+@Injectable({
+  providedIn: "root",
+})
+export class ProductService {
+  getProductsSmall(): Promise<Product[]> {
+    return Promise.resolve([
+      {
+        id: "1000",
+        code: "f230fh0g3",
+        name: "Bamboo Watch",
+        description: "Product Description",
+        image: "bamboo-watch.jpg",
+        price: 65,
+        category: "Accessories",
+        quantity: 24,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+        orders: [
+          { id: 1000, customer: "James Butt", date: "2020-09-13", amount: 65, status: "delivered" },
+          { id: 1001, customer: "Josephine Darakjy", date: "2020-09-14", amount: 130, status: "delivered" },
+          { id: 1002, customer: "Art Venere", date: "2020-09-15", amount: 195, status: "pending" },
+        ],
+      },
+      {
+        id: "1001",
+        code: "nvklal433",
+        name: "Black Watch",
+        description: "Product Description",
+        image: "black-watch.jpg",
+        price: 72,
+        category: "Accessories",
+        quantity: 61,
+        inventoryStatus: "INSTOCK",
+        rating: 4,
+        orders: [
+          { id: 2000, customer: "Lenna Paprocki", date: "2020-09-16", amount: 72, status: "delivered" },
+          { id: 2001, customer: "Donette Foller", date: "2020-09-17", amount: 144, status: "delivered" },
+          { id: 2002, customer: "Simona Morasca", date: "2020-09-18", amount: 216, status: "cancelled" },
+        ],
+      },
+      {
+        id: "1002",
+        code: "zz21cz3c1",
+        name: "Blue Band",
+        description: "Product Description",
+        image: "blue-band.jpg",
+        price: 79,
+        category: "Fitness",
+        quantity: 2,
+        inventoryStatus: "LOWSTOCK",
+        rating: 3,
+        orders: [
+          { id: 3000, customer: "Mitsue Tollner", date: "2020-09-19", amount: 79, status: "delivered" },
+          { id: 3001, customer: "Leota Dilliard", date: "2020-09-20", amount: 158, status: "pending" },
+        ],
+      },
+      {
+        id: "1003",
+        code: "244wgerg2",
+        name: "Blue T-Shirt",
+        description: "Product Description",
+        image: "blue-t-shirt.jpg",
+        price: 29,
+        category: "Clothing",
+        quantity: 25,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+        orders: [
+          { id: 4000, customer: "Sage Wieser", date: "2020-09-21", amount: 29, status: "delivered" },
+          { id: 4001, customer: "Kris Marrier", date: "2020-09-22", amount: 58, status: "delivered" },
+          { id: 4002, customer: "Minna Amigon", date: "2020-09-23", amount: 87, status: "delivered" },
+          { id: 4003, customer: "Abel Maclead", date: "2020-09-24", amount: 116, status: "pending" },
+        ],
+      },
+      {
+        id: "1004",
+        code: "h456wer53",
+        name: "Bracelet",
+        description: "Product Description",
+        image: "bracelet.jpg",
+        price: 15,
+        category: "Accessories",
+        quantity: 73,
+        inventoryStatus: "INSTOCK",
+        rating: 4,
+        orders: [
+          { id: 5000, customer: "Kiley Caldarera", date: "2020-09-25", amount: 15, status: "delivered" },
+          { id: 5001, customer: "Graciela Ruta", date: "2020-09-26", amount: 30, status: "delivered" },
+          { id: 5002, customer: "Cammy Albares", date: "2020-09-27", amount: 45, status: "delivered" },
+        ],
+      },
+      {
+        id: "1005",
+        code: "av2231fwg",
+        name: "Brown Purse",
+        description: "Product Description",
+        image: "brown-purse.jpg",
+        price: 120,
+        category: "Accessories",
+        quantity: 0,
+        inventoryStatus: "OUTOFSTOCK",
+        rating: 4,
+        orders: [
+          { id: 6000, customer: "Mattie Poquette", date: "2020-09-28", amount: 120, status: "delivered" },
+          { id: 6001, customer: "Meaghan Garufi", date: "2020-09-29", amount: 240, status: "cancelled" },
+        ],
+      },
+      {
+        id: "1006",
+        code: "bib36pfvm",
+        name: "Chakra Bracelet",
+        description: "Product Description",
+        image: "chakra-bracelet.jpg",
+        price: 32,
+        category: "Accessories",
+        quantity: 5,
+        inventoryStatus: "LOWSTOCK",
+        rating: 3,
+        orders: [
+          { id: 7000, customer: "Gladys Rim", date: "2020-09-30", amount: 32, status: "delivered" },
+          { id: 7001, customer: "Yuki Whobrey", date: "2020-10-01", amount: 64, status: "pending" },
+        ],
+      },
+      {
+        id: "1007",
+        code: "mbvjkgip5",
+        name: "Galaxy Earrings",
+        description: "Product Description",
+        image: "galaxy-earrings.jpg",
+        price: 34,
+        category: "Accessories",
+        quantity: 23,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+        orders: [
+          { id: 8000, customer: "Fletcher Flosi", date: "2020-10-02", amount: 34, status: "delivered" },
+          { id: 8001, customer: "Bette Nicka", date: "2020-10-03", amount: 68, status: "delivered" },
+          { id: 8002, customer: "Veronika Inouye", date: "2020-10-04", amount: 102, status: "delivered" },
+        ],
+      },
+      {
+        id: "1008",
+        code: "vbb124btr",
+        name: "Game Controller",
+        description: "Product Description",
+        image: "game-controller.jpg",
+        price: 99,
+        category: "Electronics",
+        quantity: 2,
+        inventoryStatus: "LOWSTOCK",
+        rating: 4,
+        orders: [
+          { id: 9000, customer: "Willard Kolmetz", date: "2020-10-05", amount: 99, status: "delivered" },
+          { id: 9001, customer: "Maryann Royster", date: "2020-10-06", amount: 198, status: "pending" },
+        ],
+      },
+      {
+        id: "1009",
+        code: "cm230f032",
+        name: "Gaming Set",
+        description: "Product Description",
+        image: "gaming-set.jpg",
+        price: 299,
+        category: "Electronics",
+        quantity: 63,
+        inventoryStatus: "INSTOCK",
+        rating: 3,
+        orders: [
+          { id: 10000, customer: "Alisha Slusarski", date: "2020-10-07", amount: 299, status: "delivered" },
+          { id: 10001, customer: "Allene Iturbide", date: "2020-10-08", amount: 598, status: "delivered" },
+          { id: 10002, customer: "Chanel Caudy", date: "2020-10-09", amount: 897, status: "cancelled" },
+        ],
+      },
+    ]);
+  }
+
+  getProducts(): Promise<Product[]> {
+    return Promise.resolve([
+      {
+        id: "1000",
+        code: "f230fh0g3",
+        name: "Bamboo Watch",
+        description: "Product Description",
+        image: "bamboo-watch.jpg",
+        price: 65,
+        category: "Accessories",
+        quantity: 24,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+      },
+      {
+        id: "1001",
+        code: "nvklal433",
+        name: "Black Watch",
+        description: "Product Description",
+        image: "black-watch.jpg",
+        price: 72,
+        category: "Accessories",
+        quantity: 61,
+        inventoryStatus: "INSTOCK",
+        rating: 4,
+      },
+      {
+        id: "1002",
+        code: "zz21cz3c1",
+        name: "Blue Band",
+        description: "Product Description",
+        image: "blue-band.jpg",
+        price: 79,
+        category: "Fitness",
+        quantity: 2,
+        inventoryStatus: "LOWSTOCK",
+        rating: 3,
+      },
+      {
+        id: "1003",
+        code: "244wgerg2",
+        name: "Blue T-Shirt",
+        description: "Product Description",
+        image: "blue-t-shirt.jpg",
+        price: 29,
+        category: "Clothing",
+        quantity: 25,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+      },
+      {
+        id: "1004",
+        code: "h456wer53",
+        name: "Bracelet",
+        description: "Product Description",
+        image: "bracelet.jpg",
+        price: 15,
+        category: "Accessories",
+        quantity: 73,
+        inventoryStatus: "INSTOCK",
+        rating: 4,
+      },
+      {
+        id: "1005",
+        code: "av2231fwg",
+        name: "Brown Purse",
+        description: "Product Description",
+        image: "brown-purse.jpg",
+        price: 120,
+        category: "Accessories",
+        quantity: 13,
+        inventoryStatus: "INSTOCK",
+        rating: 4,
+      },
+      {
+        id: "1006",
+        code: "bib36pfvm",
+        name: "Chakra Bracelet",
+        description: "Product Description",
+        image: "chakra-bracelet.jpg",
+        price: 32,
+        category: "Accessories",
+        quantity: 5,
+        inventoryStatus: "LOWSTOCK",
+        rating: 3,
+      },
+      {
+        id: "1007",
+        code: "mbvjkgip5",
+        name: "Galaxy Earrings",
+        description: "Product Description",
+        image: "galaxy-earrings.jpg",
+        price: 34,
+        category: "Accessories",
+        quantity: 23,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+      },
+      {
+        id: "1008",
+        code: "vbb124btr",
+        name: "Game Controller",
+        description: "Product Description",
+        image: "game-controller.jpg",
+        price: 99,
+        category: "Electronics",
+        quantity: 2,
+        inventoryStatus: "LOWSTOCK",
+        rating: 4,
+      },
+      {
+        id: "1009",
+        code: "cm230f032",
+        name: "Gaming Set",
+        description: "Product Description",
+        image: "gaming-set.jpg",
+        price: 299,
+        category: "Electronics",
+        quantity: 63,
+        inventoryStatus: "INSTOCK",
+        rating: 3,
+      },
+    ]);
+  }
+
+  getProductsWithOrdersSmall(): Promise<Product[]> {
+    return Promise.resolve([
+      {
+        id: "1000",
+        code: "f230fh0g3",
+        name: "Bamboo Watch",
+        description: "Product Description",
+        image: "bamboo-watch.jpg",
+        price: 65,
+        category: "Accessories",
+        quantity: 24,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+        orders: [
+          { id: 1000, customer: "James Butt", date: "2020-09-13", amount: 65, status: "delivered" },
+          { id: 1001, customer: "Josephine Darakjy", date: "2020-09-14", amount: 130, status: "delivered" },
+          { id: 1002, customer: "Art Venere", date: "2020-09-15", amount: 195, status: "pending" },
+        ],
+      },
+      {
+        id: "1001",
+        code: "nvklal433",
+        name: "Black Watch",
+        description: "Product Description",
+        image: "black-watch.jpg",
+        price: 72,
+        category: "Accessories",
+        quantity: 61,
+        inventoryStatus: "INSTOCK",
+        rating: 4,
+        orders: [
+          { id: 2000, customer: "Lenna Paprocki", date: "2020-09-16", amount: 72, status: "delivered" },
+          { id: 2001, customer: "Donette Foller", date: "2020-09-17", amount: 144, status: "delivered" },
+          { id: 2002, customer: "Simona Morasca", date: "2020-09-18", amount: 216, status: "cancelled" },
+        ],
+      },
+      {
+        id: "1002",
+        code: "zz21cz3c1",
+        name: "Blue Band",
+        description: "Product Description",
+        image: "blue-band.jpg",
+        price: 79,
+        category: "Fitness",
+        quantity: 2,
+        inventoryStatus: "LOWSTOCK",
+        rating: 3,
+        orders: [
+          { id: 3000, customer: "Mitsue Tollner", date: "2020-09-19", amount: 79, status: "delivered" },
+          { id: 3001, customer: "Leota Dilliard", date: "2020-09-20", amount: 158, status: "pending" },
+        ],
+      },
+      {
+        id: "1003",
+        code: "244wgerg2",
+        name: "Blue T-Shirt",
+        description: "Product Description",
+        image: "blue-t-shirt.jpg",
+        price: 29,
+        category: "Clothing",
+        quantity: 25,
+        inventoryStatus: "INSTOCK",
+        rating: 5,
+        orders: [
+          { id: 4000, customer: "Sage Wieser", date: "2020-09-21", amount: 29, status: "delivered" },
+          { id: 4001, customer: "Kris Marrier", date: "2020-09-22", amount: 58, status: "delivered" },
+          { id: 4002, customer: "Minna Amigon", date: "2020-09-23", amount: 87, status: "delivered" },
+          { id: 4003, customer: "Abel Maclead", date: "2020-09-24", amount: 116, status: "pending" },
+        ],
+      },
+      {
+        id: "1004",
+        code: "h456wer53",
+        name: "Bracelet",
+        description: "Product Description",
+        image: "bracelet.jpg",
+        price: 15,
+        category: "Accessories",
+        quantity: 73,
+        inventoryStatus: "INSTOCK",
+        rating: 4,
+        orders: [
+          { id: 5000, customer: "Kiley Caldarera", date: "2020-09-25", amount: 15, status: "delivered" },
+          { id: 5001, customer: "Graciela Ruta", date: "2020-09-26", amount: 30, status: "delivered" },
+          { id: 5002, customer: "Cammy Albares", date: "2020-09-27", amount: 45, status: "delivered" },
+        ],
+      },
+    ]);
+  }
+}

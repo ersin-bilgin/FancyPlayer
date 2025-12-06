@@ -1,0 +1,23 @@
+﻿<#@ template language="C#" inherits="LightNap.Scaffolding.Templates.BaseTemplate" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<# foreach (string ns in Parameters.AdditionalDtoNamespaces) { #>
+using <#= ns #>;
+<# } #>
+
+namespace <#= Parameters.CoreNamespace #>.<#= Parameters.NameForNamespace #>.Dto.Request
+{
+    public class Create<#= Parameters.PascalName #>Dto
+    {
+        // TODO: Update which fields to include when creating this item.
+<#  if (Parameters.IdProperty.IsRequired) { #>
+		public required <#= Parameters.IdProperty.BackEndType #> <#= Parameters.IdProperty.Name #> { get; set; }
+<#  } #>
+<#  foreach (var property in Parameters.SetProperties) { #>
+        public <#= property.IsRequired ? "required " : "" #><#= property.BackEndType #><#= property.IsNullable ? "?" : "" #> <#= property.Name #> { get; set; }
+<#  } #>
+    }
+}

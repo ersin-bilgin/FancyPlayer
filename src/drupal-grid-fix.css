@@ -1,0 +1,256 @@
+/**
+ * Drupal Grid System CSS Fixes
+ * Grid içindeki görsel erişim sorunları için CSS düzeltmeleri
+ */
+
+/* Grid Container Temel Stilleri */
+.grid-container,
+.views-grid,
+.field--type-image,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Grid Item Stilleri */
+.grid-item,
+.views-grid-item,
+.field--type-image__item {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grid-item:hover,
+.views-grid-item:hover,
+.field--type-image__item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Görsel Container */
+.grid-item img,
+.views-grid-item img,
+.field--type-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+/* Görsel Yükleme Durumu */
+.grid-item img[src*="placeholder"],
+.views-grid-item img[src*="placeholder"],
+.field--type-image img[src*="placeholder"] {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Görsel Yükleme Hatası */
+.grid-item img[src*="error"],
+.views-grid-item img[src*="error"],
+.field--type-image img[src*="error"] {
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 12px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Loading Durumu */
+.grid-item img.loading,
+.views-grid-item img.loading,
+.field--type-image img.loading {
+  opacity: 0.5;
+  background: #f8f9fa;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+
+/* Görsel Başlık ve Açıklama */
+.grid-item .item-title,
+.views-grid-item .item-title,
+.field--type-image .item-title {
+  padding: 15px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.grid-item .item-description,
+.views-grid-item .item-description,
+.field--type-image .item-description {
+  padding: 0 15px 15px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Responsive Grid */
+@media (max-width: 768px) {
+  .grid-container,
+  .views-grid,
+  .field--type-image,
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .grid-item img,
+  .views-grid-item img,
+  .field--type-image img {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-container,
+  .views-grid,
+  .field--type-image,
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .grid-item img,
+  .views-grid-item img,
+  .field--type-image img {
+    height: 180px;
+  }
+}
+
+/* Görsel Zoom Efekti */
+.grid-item img:hover,
+.views-grid-item img:hover,
+.field--type-image img:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Grid Item Link Stilleri */
+.grid-item a,
+.views-grid-item a,
+.field--type-image a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.grid-item a:hover,
+.views-grid-item a:hover,
+.field--type-image a:hover {
+  text-decoration: none;
+}
+
+/* Empty State */
+.grid-container:empty::before,
+.views-grid:empty::before,
+.field--type-image:empty::before {
+  content: "Henüz görsel eklenmemiş";
+  display: block;
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Error State */
+.grid-container.error::before,
+.views-grid.error::before,
+.field--type-image.error::before {
+  content: "Görseller yüklenirken hata oluştu";
+  display: block;
+  text-align: center;
+  padding: 40px;
+  color: #dc3545;
+  font-weight: 500;
+}
+
+/* Loading State */
+.grid-container.loading,
+.views-grid.loading,
+.field--type-image.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.grid-container.loading::after,
+.views-grid.loading::after,
+.field--type-image.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Accessibility Improvements */
+.grid-item:focus,
+.views-grid-item:focus,
+.field--type-image:focus {
+  outline: 2px solid #007cba;
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .grid-item,
+  .views-grid-item,
+  .field--type-image__item {
+    border: 2px solid #000;
+  }
+  
+  .grid-item img,
+  .views-grid-item img,
+  .field--type-image img {
+    border: 1px solid #000;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .grid-item,
+  .views-grid-item,
+  .field--type-image__item,
+  .grid-item img,
+  .views-grid-item img,
+  .field--type-image img {
+    transition: none;
+    animation: none;
+  }
+} 

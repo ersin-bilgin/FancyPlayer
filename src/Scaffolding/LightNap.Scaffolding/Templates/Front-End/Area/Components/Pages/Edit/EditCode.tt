@@ -1,0 +1,133 @@
+﻿<#@ template language="C#" inherits="LightNap.Scaffolding.Templates.BaseTemplate" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+import { CommonModule } from "@angular/common";
+import { Component, inject, input, OnInit } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ApiResponseComponent, BlockUiService, ConfirmPopupComponent, ErrorListComponent, ToastService } from "@core";
+import { ConfirmationService } from "primeng/api";
+import { ButtonModule } from "primeng/button";
+import { DatePickerModule } from "primeng/datepicker";
+import { CardModule } from "primeng/card";
+import { CheckboxModule } from "primeng/checkbox";
+import { InputNumberModule } from "primeng/inputnumber";
+import { InputTextModule } from "primeng/inputtext";
+import { finalize, Observable, tap } from "rxjs";
+import { Update<#= Parameters.PascalName #>Request } from "src/app/<#= Parameters.KebabNamePlural #>/models/request/update-<#= Parameters.KebabName #>-request";
+import { <#= Parameters.PascalName #> } from "src/app/<#= Parameters.KebabNamePlural #>/models/response/<#= Parameters.KebabName #>";
+import { <#= Parameters.PascalName #>Service } from "src/app/<#= Parameters.KebabNamePlural #>/services/<#= Parameters.KebabName #>.service";
+
+@Component({
+  standalone: true,
+  templateUrl: "./edit.component.html",
+  imports: [
+    CommonModule,
+    CardModule,
+    ReactiveFormsModule,
+    ApiResponseComponent,
+    ConfirmPopupComponent,
+    RouterLink,
+    DatePickerModule,
+    ButtonModule,
+    InputTextModule,
+    InputNumberModule,
+    CheckboxModule,
+    ErrorListComponent,
+  ],
+})
+export class EditComponent implements OnInit {
+  #<#= Parameters.CamelName #>Service = inject(<#= Parameters.PascalName #>Service);
+  #router = inject(Router);
+  #activeRoute = inject(ActivatedRoute);
+  #confirmationService = inject(ConfirmationService);
+  #toast = inject(ToastService);
+  #fb = inject(FormBuilder);
+  #blockUi = inject(BlockUiService);
+
+  errors = new Array<string>();
+
+  form = this.#fb.group({
+	// TODO: Update these fields to match the right parameters.
+<#  foreach (var property in Parameters.SetProperties) {
+        switch (property.FrontEndType) {
+            case "boolean": #>
+	<#= property.CamelName #>: this.#fb.control(false, [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              break;
+            case "number": #>
+	<#= property.CamelName #>: this.#fb.control(0, [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              break;
+            case "Date": #>
+		<#= property.CamelName #>: this.#fb.control(new Date(), [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              break;
+            default:
+                if (property.BackEndType == "Guid") { #>
+	<#= property.CamelName #>: this.#fb.control("a0641a12-dead-beef-f00d-f1acc1d171e5", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else if (property.BackEndType == "DateOnly") { #>
+	<#= property.CamelName #>: this.#fb.control("2024-11-17", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else if (property.BackEndType == "TimeOnly") { #>
+	<#= property.CamelName #>: this.#fb.control("11:23:45", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else if (property.BackEndType == "TimeSpan") { #>
+	<#= property.CamelName #>: this.#fb.control("01:00:00", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else { #>
+	<#= property.CamelName #>: this.#fb.control("string", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+            break;
+        }
+    }#>
+  });
+
+  readonly id = input.required<<#= Parameters.IdProperty.FrontEndType #>>();
+  <#= Parameters.CamelName #>$ = new Observable<<#= Parameters.PascalName #>>();
+
+  ngOnInit() {
+    this.<#= Parameters.CamelName #>$ = this.#<#= Parameters.CamelName #>Service.get<#= Parameters.PascalName #>(this.<#= Parameters.IdProperty.CamelName #>()).pipe(
+      tap(<#= Parameters.CamelName #> => this.form.patchValue(<#= Parameters.CamelName #>))
+    );
+  }
+
+  saveClicked() {
+    this.errors = [];
+
+    const request = <Update<#= Parameters.PascalName #>Request>this.form.value;
+
+    this.#blockUi.show({ message: "Saving..." });
+    this.#<#= Parameters.CamelName #>Service
+      .update<#= Parameters.PascalName #>(this.id(), request)
+      .pipe(finalize(() => this.#blockUi.hide()))
+      .subscribe({
+        next: () => this.#toast.success("Updated successfully"),
+        error: response => (this.errors = response.errorMessages),
+      });
+  }
+  
+  deleteClicked(event: any) {
+    this.errors = [];
+
+    this.#confirmationService.confirm({
+      header: "Confirm Delete Item",
+      message: `Are you sure that you want to delete this item?`,
+      target: event.target,
+      key: "delete",
+      accept: () => {
+        this.#blockUi.show({ message: "Deleting..." });
+        this.#<#= Parameters.CamelName #>Service.delete<#= Parameters.PascalName #>(this.<#= Parameters.IdProperty.CamelName #>())
+          .pipe(finalize(() => this.#blockUi.hide()))
+          .subscribe({
+            next: () => {
+              this.#toast.success("Deleted successfully");
+              this.#router.navigate(["."], { relativeTo: this.#activeRoute.parent });
+            },
+            error: response => this.errors = response.errorMessages
+          });
+      },
+    });
+  }
+}

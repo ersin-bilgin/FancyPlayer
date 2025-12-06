@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  lightnap-webapi:
+    build:
+      context: .
+      dockerfile: LightNap.WebApi/Dockerfile
+    image: ${ACR_REGISTRY}/lightnap-webapi:latest
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080;https://+:8081
+      - DatabaseProvider=SqlServer
+      - ConnectionStrings__DefaultConnection=${SQL_CONNECTION_STRING}
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - Email__Provider=LogToConsole
+      - Email__FromEmail=${EMAIL_FROM}
+      - Email__FromDisplayName=${EMAIL_DISPLAY_NAME}
+    depends_on:
+      - sqlserver
+    networks:
+      - lightnap-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - lightnap-network
+
+  lightnap-maintenance:
+    build:
+      context: .
+      dockerfile: LightNap.MaintenanceService/Dockerfile
+    image: ${ACR_REGISTRY}/lightnap-maintenance:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=${SQL_CONNECTION_STRING}
+    depends_on:
+      - sqlserver
+    networks:
+      - lightnap-network
+
+volumes:
+  sqlserver_data:
+
+networks:
+  lightnap-network:
+    driver: bridge 

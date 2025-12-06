@@ -1,0 +1,56 @@
+# Azure Deployment Environment Variables
+# Bu dosyayı production ortamında kullanmayın, sadece referans için
+
+# Azure Resource Names
+RESOURCE_GROUP_NAME=lightnap-rg
+LOCATION=West Europe
+ACR_NAME=lightnapregistry
+WEB_API_APP_NAME=lightnap-webapi
+MAINTENANCE_APP_NAME=lightnap-maintenance
+SQL_SERVER_NAME=lightnap-sqlserver
+SQL_DATABASE_NAME=LightNap
+KEY_VAULT_NAME=lightnap-keyvault
+
+# Database Configuration
+SQL_CONNECTION_STRING=Server=tcp:lightnap-sqlserver.database.windows.net,1433;Database=LightNap;User ID=lightnapadmin;Password=YourStrongPassword123!;Encrypt=true;TrustServerCertificate=false;Connection Timeout=30;
+SQL_USER=lightnapadmin
+SQL_PASSWORD=YourStrongPassword123!
+
+# JWT Configuration
+JWT_KEY=YourSuperSecretJwtKeyForProductionEnvironment2024!
+JWT_ISSUER=https://lightnap-webapi.azurewebsites.net
+JWT_AUDIENCE=https://lightnap-webapi.azurewebsites.net
+JWT_EXPIRATION_MINUTES=120
+
+# Email Configuration
+EMAIL_PROVIDER=Smtp
+EMAIL_FROM=noreply@yourdomain.com
+EMAIL_DISPLAY_NAME=LightNap System
+SMTP_HOST=smtp.sendgrid.net
+SMTP_PORT=587
+SMTP_USER=apikey
+SMTP_PASSWORD=YourSendGridApiKey
+
+# Application Settings
+DATABASE_PROVIDER=SqlServer
+ASPNETCORE_ENVIRONMENT=Production
+WEBSITE_HOSTNAME=lightnap-webapi.azurewebsites.net
+SITE_URL_ROOT_FOR_EMAILS=https://lightnap-webapi.azurewebsites.net/
+
+# Container Registry
+ACR_REGISTRY=lightnapregistry.azurecr.io
+ACR_USERNAME=lightnapregistry
+ACR_PASSWORD=YourAcrPassword
+
+# Monitoring
+APPLICATION_INSIGHTS_CONNECTION_STRING=YourApplicationInsightsConnectionString
+LOG_ANALYTICS_WORKSPACE_ID=YourLogAnalyticsWorkspaceId
+
+# Security
+KEY_VAULT_URL=https://lightnap-keyvault.vault.azure.net/
+MANAGED_IDENTITY_CLIENT_ID=YourManagedIdentityClientId
+
+# Cost Optimization
+APP_SERVICE_PLAN_SKU=P1v3
+SQL_DATABASE_SKU=Basic
+ACR_SKU=Basic 

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "LightNap.MaintenanceService": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

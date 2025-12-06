@@ -1,0 +1,58 @@
+@host = http://localhost:8080
+@token = YOUR_JWT_TOKEN_HERE
+
+### Login to get JWT token
+POST {{host}}/api/identity/login
+Content-Type: application/json
+
+{
+  "login": "admin@admin.com",
+  "password": "A2m!nPassword",
+  "rememberMe": false,
+  "deviceDetails": "REST Client"
+}
+
+### Get Live TV Categories (JWT Token Required)
+GET {{host}}/api/v1/streaming/live/categories
+Authorization: Bearer {{token}}
+
+### Get Live TV Streams (JWT Token Required)
+GET {{host}}/api/v1/streaming/live/streams?categoryId=3
+Authorization: Bearer {{token}}
+
+### Get VOD Categories (JWT Token Required)
+GET {{host}}/api/v1/streaming/vod/categories
+Authorization: Bearer {{token}}
+
+### Get VOD Streams (JWT Token Required)
+GET {{host}}/api/v1/streaming/vod/streams?categoryId=10
+Authorization: Bearer {{token}}
+
+### Get VOD Info (JWT Token Required)
+GET {{host}}/api/v1/streaming/vod/52356
+Authorization: Bearer {{token}}
+
+### Get Series Categories (JWT Token Required)
+GET {{host}}/api/v1/streaming/series/categories
+Authorization: Bearer {{token}}
+
+### Get Series (JWT Token Required)
+GET {{host}}/api/v1/streaming/series?categoryId=20
+Authorization: Bearer {{token}}
+
+### Get Series Info (JWT Token Required)
+GET {{host}}/api/v1/streaming/series/12345
+Authorization: Bearer {{token}}
+
+### Get EPG (JWT Token Required)
+GET {{host}}/api/v1/streaming/epg?categoryId=3
+Authorization: Bearer {{token}}
+
+### Get Short EPG (JWT Token Required)
+GET {{host}}/api/v1/streaming/epg/short/2?limit=20
+Authorization: Bearer {{token}}
+
+### Get Simple Data Table (JWT Token Required)
+GET {{host}}/api/v1/streaming/epg/table/2
+Authorization: Bearer {{token}}
+

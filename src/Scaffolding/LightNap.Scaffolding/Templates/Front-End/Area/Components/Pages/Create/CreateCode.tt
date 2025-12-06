@@ -1,0 +1,104 @@
+﻿<#@ template language="C#" inherits="LightNap.Scaffolding.Templates.BaseTemplate" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+import { CommonModule } from "@angular/common";
+import { Component, inject } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { BlockUiService, ErrorListComponent } from "@core";
+import { ButtonModule } from "primeng/button";
+import { DatePickerModule } from "primeng/datepicker";
+import { CardModule } from "primeng/card";
+import { CheckboxModule } from "primeng/checkbox";
+import { InputNumberModule } from "primeng/inputnumber";
+import { InputTextModule } from "primeng/inputtext";
+import { finalize } from "rxjs";
+import { Create<#= Parameters.PascalName #>Request } from "src/app/<#= Parameters.KebabNamePlural #>/models/request/create-<#= Parameters.KebabName #>-request";
+import { <#= Parameters.PascalName #>Service } from "src/app/<#= Parameters.KebabNamePlural #>/services/<#= Parameters.KebabName #>.service";
+
+@Component({
+  standalone: true,
+  templateUrl: "./create.component.html",
+  imports: [
+    CommonModule,
+    CardModule,
+    ReactiveFormsModule,
+    RouterLink,
+    DatePickerModule,
+    ButtonModule,
+    InputTextModule,
+    InputNumberModule,
+    CheckboxModule,
+    ErrorListComponent,
+  ],
+})
+export class CreateComponent {
+  #<#= Parameters.CamelName #>Service = inject(<#= Parameters.PascalName #>Service);
+  #router = inject(Router);
+  #activeRoute = inject(ActivatedRoute);
+  #fb = inject(FormBuilder);
+  #blockUi = inject(BlockUiService);
+
+  errors = new Array<string>();
+
+  form = this.#fb.group({
+	// TODO: Update these fields to match the right parameters.
+<#  if (Parameters.IdProperty.IsRequired) {
+        if (Parameters.IdProperty.FrontEndType == "number") { #>
+	<#= Parameters.IdProperty.CamelName #>: this.#fb.control(1, [Validators.required]),
+<#      } else if (Parameters.IdProperty.BackEndType == "Guid") { #>
+	<#= Parameters.IdProperty.CamelName #>: this.#fb.control("a0641a12-dead-beef-f00d-f1acc1d171e5", [Validators.required]),
+<#      } else { #>
+	<#= Parameters.IdProperty.CamelName #>: this.#fb.control("", [Validators.required]),
+<#      }
+    } #>
+<#  foreach (var property in Parameters.SetProperties) {
+        switch (property.FrontEndType) {
+            case "boolean": #>
+	<#= property.CamelName #>: this.#fb.control(false, [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              break;
+            case "number": #>
+	<#= property.CamelName #>: this.#fb.control(0, [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              break;
+            case "Date": #>
+	<#= property.CamelName #>: this.#fb.control(new Date(), [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              break;
+            default:
+                if (property.BackEndType == "Guid") { #>
+	<#= property.CamelName #>: this.#fb.control("a0641a12-dead-beef-f00d-f1acc1d171e5", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else if (property.BackEndType == "DateOnly") { #>
+	<#= property.CamelName #>: this.#fb.control("2024-11-17", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else if (property.BackEndType == "TimeOnly") { #>
+	<#= property.CamelName #>: this.#fb.control("11:23:45", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else if (property.BackEndType == "TimeSpan") { #>
+	<#= property.CamelName #>: this.#fb.control("01:00:00", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+                else { #>
+	<#= property.CamelName #>: this.#fb.control("<#= property.Name #>", [<#= !property.IsNullable ? "Validators.required" : "" #>]),
+<#              }
+            break;
+        }
+    }#>
+  });
+
+  createClicked() {
+    this.errors = [];
+
+    const request = <Create<#= Parameters.PascalName #>Request>this.form.value;
+
+    this.#blockUi.show({message: "Creating..."});
+    this.#<#= Parameters.CamelName #>Service
+      .create<#= Parameters.PascalName #>(request)
+      .pipe(finalize(() => this.#blockUi.hide()))
+      .subscribe({
+        next: <#= Parameters.CamelName #> => this.#router.navigate([<#= Parameters.CamelName #>.id], { relativeTo: this.#activeRoute.parent }),
+        error: response => (this.errors = response.errorMessages),
+      });
+  }
+}

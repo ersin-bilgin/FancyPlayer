@@ -1,0 +1,64 @@
+﻿<#@ template language="C#" inherits="LightNap.Scaffolding.Templates.BaseTemplate" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<p-card header="Create">
+  <div class="flex gap-1 mb-1">
+    <p-button [routerLink]="['..']" icon="pi pi-arrow-up" label="See all" />
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="createClicked()" autocomplete="off">
+    <div class="w-[30rem] flex flex-col gap-5">
+<# if (Parameters.IdProperty.IsRequired) { #>
+          <div class="flex flex-col gap-2">
+<#      if (Parameters.IdProperty.FrontEndType == "number") { #>
+              <label for="<#= Parameters.IdProperty.CamelName #>" class="text-xl"><#= Parameters.IdProperty.Name #></label>
+              <p-inputNumber id="<#= Parameters.IdProperty.CamelName #>" formControlName="<#= Parameters.IdProperty.CamelName #>" styleClass="w-full" />
+<#	    } else { #>
+              <label for="<#= Parameters.IdProperty.CamelName #>" class="text-xl"><#= Parameters.IdProperty.Name #></label>
+              <input pInputText id="<#= Parameters.IdProperty.CamelName #>" formControlName="<#= Parameters.IdProperty.CamelName #>" class="w-full" />
+<# }#>
+          </div>
+<# } #>
+<# foreach (var property in Parameters.SetProperties) { #>
+      <div class="flex flex-col gap-2">
+<#      switch (property.FrontEndType) {
+            case "boolean": #>
+        <div class="flex gap-2">
+          <p-checkbox inputId="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" [binary]="true" />
+          <label for="<#= property.CamelName #>"><#= property.Name #></label>
+        </div>
+<#              break;
+            case "Date": #>
+        <label for="<#= property.CamelName #>" class="text-xl"><#= property.Name #></label>
+        <p-datepicker id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" [showTime]="true" [showIcon]="true" />
+<#              break;            
+            case "number": #>
+        <label for="<#= property.CamelName #>" class="text-xl"><#= property.Name #></label>
+<#              switch(property.BackEndType) {
+				    case "double":
+				    case "float":
+				    case "decimal":
+#>
+        <p-inputNumber id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" styleClass="w-full" mode="decimal" [minFractionDigits]="2" />
+<#                      break;
+                    default: #>
+        <p-inputNumber id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" styleClass="w-full" />
+<#                  break;
+			    }
+                break;
+            default:#>
+        <label for="<#= property.CamelName #>" class="text-xl"><#= property.Name #></label>
+        <input pInputText id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" class="w-full" />
+<#          break;      
+        }#>
+      </div>
+<# } #>
+
+      <error-list [errors]="errors" />
+      <p-button type="submit" label="Create" icon="pi pi-save" severity="success" [disabled]="!form.valid" />
+    </div>
+  </form>
+</p-card>

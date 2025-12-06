@@ -1,0 +1,25 @@
+<div class="flex items-center justify-center min-h-screen w-screen overflow-hidden">
+  <div class="flex flex-col items-center justify-center">
+    <img
+      src="assets/images/logos/logo-{{ layoutService.isDarkTheme() ? 'dark' : 'light' }}.png"
+      alt="LightNap logo"
+      class="mb-8 w-24 shrink-0"
+    />
+    <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+      <div class="w-full bg-surface-0 py-20 px-8 sm:px-20" style="border-radius: 53px">
+        <div class="text-center mb-8">
+          <div class="text-3xl mb-4">
+            <ng-content select="[title]" />
+          </div>
+
+          <span>
+            <ng-content select="[subtitle]" />
+          </span>
+        </div>
+        <div>
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "lightnap-ng": {
+            "projectType": "application",
+            "schematics": {},
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:application",
+                    "options": {
+                        "outputPath": "../LightNap.WebApi/wwwroot",
+                        "index": "src/index.html",
+                        "browser": "src/main.ts",
+                        "polyfills": [],
+                        "tsConfig": "tsconfig.app.json",
+                        "assets": ["src/favicon.ico", "src/assets"],
+                        "styles": ["src/styles.css"],
+                        "scripts": []
+                    },
+                    "configurations": {
+                        "production": {
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "1.5mb",
+                                    "maximumError": "2mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "outputHashing": "all",
+                            "optimization": {
+                                "scripts": true,
+                                "styles": {
+                                    "minify": true,
+                                    "inlineCritical": false
+                                },
+                                "fonts": true
+                            },
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true
+                        },
+                        "development": {
+                            "optimization": false,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.development.ts"
+                                }
+                                                        ]
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "configurations": {
+                        "production": {
+                            "buildTarget": "lightnap-ng:build:production"
+                        },
+                        "development": {
+                            "buildTarget": "lightnap-ng:build:development"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n"
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "polyfills": [],
+                        "tsConfig": "tsconfig.spec.json",
+                        "karmaConfig": "karma.conf.js",
+                        "assets": ["src/favicon.ico", "src/assets"],
+                        "styles": ["src/styles.css"],
+                        "scripts": []
+                    }
+                }
+            }
+        }
+    },
+    "cli": {
+      "analytics": "eada5475-41aa-4d03-b3f8-039d4931c714"
+    }
+}

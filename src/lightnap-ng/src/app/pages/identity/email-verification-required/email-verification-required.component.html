@@ -1,0 +1,9 @@
+<identity-card>
+  <span title>Check Your Inbox</span>
+  <span subtitle>You must verify your email before you can log in</span>
+
+  <div class="flex justify-between w-96">
+    <a [routerLink]="'login' | route">Return to login</a>
+    <a [routerLink]="'request-verification-email' | route" class="ml-auto">Resend</a>
+  </div>
+</identity-card>

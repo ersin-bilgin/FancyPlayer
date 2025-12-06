@@ -1,0 +1,28 @@
+#!/bin/bash
+# PostgreSQL'e bağlanmak için yardımcı script
+
+echo "=== PostgreSQL Bağlantı Bilgileri ==="
+echo ""
+echo "Host: localhost (veya 127.0.0.1)"
+echo "Port: 5432"
+echo "Database: LightNap"
+echo "Username: lightnap_user"
+echo "Password: LightNap123!"
+echo ""
+echo "=== Bağlantı Yöntemleri ==="
+echo ""
+echo "1. Docker üzerinden (Önerilen):"
+echo "   docker compose exec postgresql psql -U lightnap_user -d LightNap"
+echo ""
+echo "2. Local psql ile (psql kuruluysa):"
+echo "   PGPASSWORD=LightNap123! psql -h localhost -p 5432 -U lightnap_user -d LightNap"
+echo ""
+echo "3. Connection String (GUI tool'lar için):"
+echo "   postgresql://lightnap_user:LightNap123!@localhost:5432/LightNap"
+echo ""
+echo "4. GUI Tool'lar:"
+echo "   - DBeaver: https://dbeaver.io/"
+echo "   - TablePlus: https://tableplus.com/"
+echo "   - pgAdmin: https://www.pgadmin.org/"
+echo ""
+

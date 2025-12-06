@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LightNap.Scaffolding": {
+      "commandName": "Project",
+      "commandLineArgs": "TestEntity --src-path \"../../../../..\" --overwrite true"
+    }
+  }
+}

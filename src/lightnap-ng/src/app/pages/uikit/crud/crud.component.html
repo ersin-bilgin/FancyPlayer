@@ -1,0 +1,236 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<p-toolbar styleClass="mb-6">
+  <ng-template #start>
+    <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+    <p-button
+      severity="secondary"
+      label="Delete"
+      icon="pi pi-trash"
+      outlined
+      (onClick)="deleteSelectedProducts()"
+      [disabled]="!selectedProducts || !selectedProducts.length"
+    />
+  </ng-template>
+
+  <ng-template #end>
+    <p-fileUpload
+      mode="basic"
+      accept=".csv"
+      [maxFileSize]="1000000"
+      chooseLabel="Import"
+      severity="secondary"
+      class="mr-2"
+      (onSelect)="onImport($event)"
+    />
+    <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportExcel()" />
+  </ng-template>
+</p-toolbar>
+
+<p-table
+  #dt
+  [value]="products"
+  [(selection)]="selectedProducts"
+  dataKey="id"
+  [rows]="10"
+  [showCurrentPageReport]="true"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  [loading]="loading"
+  [paginator]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [globalFilterFields]="['name', 'code', 'description', 'category', 'price', 'quantity', 'inventoryStatus', 'rating']"
+  styleClass="p-datatable-lg"
+  selectionMode="multiple"
+  [rowHover]="true"
+  (onRowSelect)="onRowSelect($event)"
+  (onRowUnselect)="onRowUnselect($event)"
+>
+  <ng-template #caption>
+    <div class="flex items-center justify-between">
+      <h5 class="m-0">Manage Products</h5>
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+      </p-iconfield>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th style="width: 4rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="code" style="min-width: 10rem">
+        Code
+        <p-sortIcon field="code"></p-sortIcon>
+      </th>
+      <th pSortableColumn="name" style="min-width: 15rem">
+        Name
+        <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th>Image</th>
+      <th pSortableColumn="price" style="min-width: 10rem">
+        Price
+        <p-sortIcon field="price"></p-sortIcon>
+      </th>
+      <th pSortableColumn="category" style="min-width: 10rem">
+        Category
+        <p-sortIcon field="category"></p-sortIcon>
+      </th>
+      <th pSortableColumn="rating" style="min-width: 10rem">
+        Reviews
+        <p-sortIcon field="rating"></p-sortIcon>
+      </th>
+      <th pSortableColumn="inventoryStatus" style="min-width: 10rem">
+        Status
+        <p-sortIcon field="inventoryStatus"></p-sortIcon>
+      </th>
+      <th style="min-width: 8rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-product>
+    <tr>
+      <td>
+        <p-tableCheckbox [value]="product"></p-tableCheckbox>
+      </td>
+      <td>
+        {{ product.code }}
+      </td>
+      <td>
+        {{ product.name }}
+      </td>
+      <td>
+        <img
+          [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image"
+          [alt]="product.name"
+          style="width: 40px"
+          class="rounded"
+        />
+      </td>
+      <td>
+        {{ product.price | currency: "USD" }}
+      </td>
+      <td>
+        {{ product.category }}
+      </td>
+      <td>
+        <p-rating [ngModel]="product.rating" [readonly]="true"></p-rating>
+      </td>
+      <td>
+        <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product)"></p-tag>
+      </td>
+      <td>
+        <div class="flex">
+          <p-button
+            icon="pi pi-pencil"
+            pRipple
+            class="mr-2"
+            [rounded]="true"
+            [outlined]="true"
+            severity="success"
+            (onClick)="editProduct(product)"
+          ></p-button>
+          <p-button icon="pi pi-trash" pRipple severity="danger" [rounded]="true" [outlined]="true" (onClick)="deleteProduct(product)"></p-button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="productDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true">
+  <ng-template #content>
+    <div class="flex flex-col gap-6">
+      <img
+        [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image"
+        [alt]="product.image"
+        class="block m-auto pb-4"
+        *ngIf="product.image"
+      />
+      <div>
+        <label for="name" class="block font-bold mb-3">Name</label>
+        <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus fluid />
+        <small class="text-red-500" *ngIf="submitted && !product.name">Name is required.</small>
+      </div>
+      <div>
+        <label for="description" class="block font-bold mb-3">Description</label>
+        <textarea id="description" pTextarea [(ngModel)]="product.description" required rows="3" cols="20" fluid></textarea>
+      </div>
+
+      <div>
+        <label for="inventoryStatus" class="block font-bold mb-3">Inventory Status</label>
+        <p-select
+          [(ngModel)]="product.inventoryStatus"
+          inputId="inventoryStatus"
+          [options]="statuses"
+          optionLabel="label"
+          optionValue="label"
+          placeholder="Select a Status"
+          fluid
+        />
+      </div>
+
+      <div>
+        <span class="block font-bold mb-4">Category</span>
+        <div class="grid grid-cols-12 gap-4">
+          <div class="flex items-center gap-2 col-span-6">
+            <p-radioButton id="category1" name="category" value="Accessories" [(ngModel)]="product.category" />
+            <label for="category1">Accessories</label>
+          </div>
+          <div class="flex items-center gap-2 col-span-6">
+            <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />
+            <label for="category2">Clothing</label>
+          </div>
+          <div class="flex items-center gap-2 col-span-6">
+            <p-radioButton id="category3" name="category" value="Electronics" [(ngModel)]="product.category" />
+            <label for="category3">Electronics</label>
+          </div>
+          <div class="flex items-center gap-2 col-span-6">
+            <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />
+            <label for="category4">Fitness</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-6">
+          <label for="price" class="block font-bold mb-3">Price</label>
+          <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US" fluid />
+        </div>
+        <div class="col-span-6">
+          <label for="quantity" class="block font-bold mb-3">Quantity</label>
+          <p-inputNumber id="quantity" [(ngModel)]="product.quantity" fluid />
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #footer>
+    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()"></p-button>
+    <p-button label="Save" icon="pi pi-check" (onClick)="saveProduct()"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteProductDialog" header="Confirm" [modal]="true" [style]="{ width: '450px' }">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span *ngIf="product"
+      >Are you sure you want to delete <b>{{ product.name }}</b
+      >?</span
+    >
+  </div>
+  <ng-template #footer>
+    <p-button label="No" icon="pi pi-times" [text]="true" (onClick)="deleteProductDialog = false"></p-button>
+    <p-button label="Yes" icon="pi pi-check" [text]="true" (onClick)="confirmDelete()"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteProductsDialog" header="Confirm" [modal]="true" [style]="{ width: '450px' }">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure you want to delete selected products?</span>
+  </div>
+  <ng-template #footer>
+    <p-button label="No" icon="pi pi-times" [text]="true" (onClick)="deleteProductsDialog = false"></p-button>
+    <p-button label="Yes" icon="pi pi-check" [text]="true" (onClick)="confirmDeleteSelected()"></p-button>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,74 @@
+### Xtream API Test Endpoints
+### Base URL: http://localhost:8080
+### Test credentials from Postman environment
+
+@baseUrl = http://localhost:8080
+@username = your_username
+@password = your_password
+@category_id = 3
+@stream_id = 2
+@vod_id = 52356
+@series_id = 4
+@episode_id = 12345
+@epg_limit = 20
+
+### 1. Authentication - Get User Info & Server Info
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}
+Accept: application/json
+
+### 2. Get Live TV Categories
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_live_categories
+Accept: application/json
+
+### 3. Get All Live Streams
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_live_streams
+Accept: application/json
+
+### 4. Get Live Streams by Category (category_id: 3)
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_live_streams&category_id={{category_id}}
+Accept: application/json
+
+### 5. Get VOD Categories
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_vod_categories
+Accept: application/json
+
+### 6. Get All VOD Streams
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_vod_streams
+Accept: application/json
+
+### 7. Get VOD Streams by Category
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_vod_streams&category_id={{category_id}}
+Accept: application/json
+
+### 8. Get VOD Info (vod_id: 52356)
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_vod_info&vod_id={{vod_id}}
+Accept: application/json
+
+### 9. Get Series Categories
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_series_categories
+Accept: application/json
+
+### 10. Get All Series
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_series
+Accept: application/json
+
+### 11. Get Series by Category
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_series&category_id={{category_id}}
+Accept: application/json
+
+### 12. Get Series Info (series_id: 4)
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_series_info&series_id={{series_id}}
+Accept: application/json
+
+### 13. Get EPG by Category
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_epg&category_id={{category_id}}
+Accept: application/json
+
+### 14. Get Short EPG (stream_id: 2, limit: 20)
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_short_epg&stream_id={{stream_id}}&limit={{epg_limit}}
+Accept: application/json
+
+### 15. Get Simple Data Table (stream_id: 2)
+GET {{baseUrl}}/api/player?username={{username}}&password={{password}}&action=get_simple_data_table&stream_id={{stream_id}}
+Accept: application/json
+

@@ -1,0 +1,111 @@
+﻿<#@ template language="C#" inherits="LightNap.Scaffolding.Templates.BaseTemplate" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<p-card header="All">
+  <div class="flex gap-1 mb-1">
+    <p-button [routerLink]="['create']" severity="success" icon="pi pi-plus" label="Create" />
+  </div>
+
+  <api-response [apiResponse]="searchResults$" errorMessage="Error loading items" loadingMessage="Loading items...">
+    <ng-template #success let-searchResults>
+      <p-panel header="Filters" [formGroup]="form" [toggleable]="true" [collapsed]="true" styleClass="mb-2">
+        <div class="flex flex-wrap gap-2">
+<# foreach (var property in Parameters.GetProperties) { #>
+          <div class="w-[16rem]">
+<#      switch (property.FrontEndType) {
+            case "boolean": #>
+            <div class="flex gap-2">
+              <p-checkbox inputId="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" [binary]="true" />
+              <label for="<#= property.CamelName #>"><#= property.Name #></label>
+            </div>
+<#              break;
+            case "Date": #>
+            <label for="<#= property.CamelName #>"><#= property.Name #></label>
+            <p-datepicker id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" [showTime]="true" [showIcon]="true" />
+<#              break;            
+            case "number": #>
+            <label for="<#= property.CamelName #>"><#= property.Name #></label>
+<#              switch(property.BackEndType) {
+				    case "double":
+				    case "float":
+				    case "decimal":
+#>
+            <p-inputNumber id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" styleClass="w-full" mode="decimal" [minFractionDigits]="2" />
+<#                      break;
+                    default: #>
+            <p-inputNumber id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" styleClass="w-full" />
+<#                  break;
+			    }
+                break;
+            default:#>
+            <label for="<#= property.CamelName #>"><#= property.Name #></label>
+            <input pInputText id="<#= property.CamelName #>" formControlName="<#= property.CamelName #>" class="w-full" />
+<#          break;      
+        }#>
+          </div>
+<# } #>
+          <div class="w-[16rem]">
+            <p-button label="Reset" icon="pi pi-refresh" (click)="this.form.reset()" severity="danger" />
+          </div>
+        </div>
+      </p-panel>
+
+      <p-table
+        [value]="searchResults.data"
+        [paginator]="true"
+        [rows]="pageSize"
+        [totalRecords]="searchResults.totalCount"
+        [lazy]="true"
+        (onLazyLoad)="onLazyLoad($event)"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <th><#= Parameters.IdProperty.Name #></th>
+<#      foreach (var property in Parameters.GetProperties) { #>
+            <th><#= property.Name #></th>
+<#      } #>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-<#= Parameters.CamelName #>>
+          <tr>
+            <td>
+              <p-button [routerLink]="[<#= Parameters.CamelName #>.<#= Parameters.IdProperty.CamelName #>]" icon="pi pi-eye" />
+            </td>
+            <td>{{<#= Parameters.CamelName #>.<#= Parameters.IdProperty.CamelName #>}}</td>
+<#      foreach (var property in Parameters.GetProperties) { 
+            switch (property.BackEndType) {
+				case "DateTime": #>
+            <td>{{<#= Parameters.CamelName #>.<#= property.CamelName #> | date : 'long'}}</td>
+<#                  break;
+				case "int":
+                case "long":
+                case "double":
+                case "float":
+                case "decimal":
+                case "short":
+                case "byte":
+                case "ushort":
+                case "uint":
+                case "ulong": #>
+            <td>{{<#= Parameters.CamelName #>.<#= property.CamelName #> | number}}</td>
+<#                  break;
+				default: #>
+            <td>{{<#= Parameters.CamelName #>.<#= property.CamelName #>}}</td>
+<#                  break;
+            }
+        } #>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="100%">There are no items.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </api-response>
+</p-card>
