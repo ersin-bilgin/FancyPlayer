@@ -37,4 +37,6 @@ RUN dotnet publish "./LightNap.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_ENVIRONMENT=Docker
+ENV ASPNETCORE_URLS=http://+:8080
 ENTRYPOINT ["dotnet", "LightNap.WebApi.dll"]
