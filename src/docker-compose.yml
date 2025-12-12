@@ -61,7 +61,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:8080
       - DatabaseProvider=PostgreSQL
       - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=LightNap;Username=lightnap_user;Password=LightNap123!
